@@ -1,0 +1,783 @@
+---
+title : DANG_final_project_EDA
+
+author: Michael Li
+---
+
+================================================================================
+
+
+This report is to explore a dataset containing red wine quality and other attribute 
+for around 1599 samples.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,include = FALSE,package}
+
+# Note that the `echo = FALSE` parameter was added to the code chunk to prevent
+# printing of the R code that generated the plot.
+# Load all of the packages that you end up using in your analysis in this code
+# chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk. This
+# prevents the code from displaying in the knitted HTML output. You should set
+# echo=FALSE for all code chunks in your file, unless it makes sense for your
+# report to show the code that generated a particular plot.
+
+# The other parameters for "message" and "warning" should also be set to FALSE
+# for other code chunks once you have verified that each plot comes out as you
+# want it to. This will clean up the flow of your report.
+
+install.packages("ggplot2", dependencies = T,
+                 repos = "http://cran.us.r-project.org")
+install.packages("knitr", dependencies = T,
+                 repos = "http://cran.us.r-project.org")
+install.packages("tidyverse", dependencies = T,
+                 repos = "http://cran.us.r-project.org")
+install.packages("RColorBrewer", dependencies = T,
+                 repos = "http://cran.us.r-project.org")
+install.packages("memisc",repos = "http://cran.us.r-project.org")
+install.packages("GGally",repos = "http://cran.us.r-project.org")
+
+
+library(ggplot2)
+library(tidyverse)
+library(GGally)
+library(RColorBrewer)
+library(memisc)
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,Load_the_Data}
+# Load the Data
+
+#setwd("/Users/yaozhenli/Google Drive/data_science_mac/DANG/7_EXPLORATORY_DATA_ANALYSIS/EDA/3/project/RMD file")
+
+#import data and clean data
+winequalitydata <- read.table("C:/Users/Michael Li/Google Drive/data_science_mac/DANG/7_EXPLORATORY_DATA_ANALYSIS/EDA/3/project/Data set/wineQualityReds.csv", header = T,sep = ",")
+
+winequalitydata$X  <- NULL
+
+
+```
+
+
+data introductioin: This is Reb Wine Quality data set. Contain1599 red wines 
+with 11 varaibles on the chemical properties of the wine
+
+
+# Univariate Plots Section
+
+
+
+### How many observations?
+```{r echo=FALSE, message=FALSE, warning=FALSE, observation_count}
+
+nrow(winequalitydata)
+
+# 1599 observation
+
+```
+
+Total 1599 observation
+
+
+###Which columns/factors we are measuring?
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,factoring}
+colnames(winequalitydata)
+
+```
+
+
+### How does the quality of wine distribute among dataset?
+
+```{r echo=FALSE,message=FALSE, warning=FALSE,quality_distribution}
+
+ggplot(aes(x = factor(quality)),data = winequalitydata)+
+  geom_bar()+
+ggtitle("quality distribution")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="quality ")
+
+```
+
+
+most of quality is 5 or 6
+
+
+### How alcohol distribute among this dataset
+
+```{r echo=FALSE, message=FALSE, warning=FALSE,alcohol_level_distribution}
+
+ggplot(aes(x = alcohol), data= winequalitydata)+
+  geom_histogram(binwidth = 0.5)+
+  ggtitle("alcohol distribution")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="alcohol(%) ")+
+  scale_x_continuous(breaks=seq(8,20,0.5))
+
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+summary(winequalitydata$alcohol)
+```
+
+majority of alcohol is under under 9.25 ~9.75.Some extreme value exists in high
+alcohol
+
+
+
+
+### How PH distribute among this dateset
+```{r echo=FALSE, message=FALSE, warning=FALSE,ph_level_distribution}
+
+ggplot(aes(x = pH), data= winequalitydata)+
+  geom_histogram(binwidth = 0.1)+
+
+    scale_x_continuous(breaks=seq(2,5,0.1))+
+    ggtitle("ph distribution")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+summary(winequalitydata$pH)
+
+
+
+```
+
+
+majority of ph is under under 3.05 ~3.65. Close to normal distribution
+
+
+
+### how fixed.acidity distribute among this dataset
+```{r echo=FALSE,message=FALSE, warning=FALSE, fixed_acidity_distribution}
+
+ggplot(aes(x = fixed.acidity), data= winequalitydata)+
+  geom_histogram(binwidth = 0.1)+
+  
+  
+    scale_x_continuous(breaks=seq(4,16,0.5))+
+  ggtitle("fixed.acidity distribution")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="fixed acidity (g/dm^3) ")
+
+```
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+
+
+summary(winequalitydata$fixed.acidity)
+
+```
+
+
+
+majority of fixed.acidity is under around 6.5~10. Some extrem highv value in
+fixed.acidity
+
+### how density distribute among this dateset
+```{r echo=FALSE,density_distribution}
+
+
+ggplot(aes(x = density), data = winequalitydata)+
+  geom_histogram()+
+  scale_x_continuous(breaks=seq(0.99,1.02,0.001))+
+
+  ggtitle("density distribution")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="density (g/cm^3) ")
+
+```
+
+```{r echo=FALSE}
+
+summary(winequalitydata$density)
+
+```
+
+majority of density is under around 0.995 to 1.000. Close to normal distribution
+
+
+
+### how sulphates distribute among this dateset
+```{r echo=FALSE}
+
+
+ggplot(aes(x = sulphates), data = winequalitydata)+
+  geom_histogram()+
+  scale_x_continuous(breaks = seq(0.2,1.2,0.1))+
+    ggtitle("sulphates distribution")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="sulphates (g/dm^3) ")
+```
+
+```{r echo=FALSE}
+
+summary(winequalitydata$sulphates)
+```
+
+majority of density is under around 0.55 to 0.73. Some extreme high value \
+in there.
+
+
+
+
+### how volatile.acidity distribute among this dateset
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+ggplot(aes(x = volatile.acidity), data = winequalitydata)+
+  geom_histogram()+
+scale_x_continuous(breaks=seq(0.1,1.5,0.1))+
+    ggtitle("volatile.acidity distribution")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="volatile acidity(g/dm^3) ")
+
+```
+
+
+```{r echo=FALSE}
+
+summary(winequalitydata$volatile.acidity)
+
+```
+
+
+Most volatile.acidity is between 0.2 and 0.8 group
+
+# Univariate Analysis
+
+
+### What is the structure of your dataset?
+
+This is 1599 variable. And 12 dimention of the wine data involved.
+
+All of dimention is numerical data
+
+
+### What is/are the main feature(s) of interest in your dataset?
+
+fixed.acidity,pH,alchol,quality,density
+
+
+### What other features in the dataset do you think will help support your \
+investigation into your feature(s) of interest?
+
+volcatile.acidity, citric.acid,residual.sugar
+
+
+
+### Did you create any new variables from existing variables in the dataset?
+Yes.I create quality_category since extreme value is small and may cause biased
+
+### Of the features you investigated, were there any unusual distributions? \
+Did you perform any operations on the data to tidy, adjust, or change the form \
+of the data? If so, why did you do this?
+
+After analysis, I will add group feature into the dataset.based on the outlier \
+and distribution of volume, I break the quality into 3 group. [3,4),[4,7],[8]
+
+
+
+### how quality category distibute
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+winequalitydata$quality_category <- cut(winequalitydata$quality, breaks = c(0,4,6,8))
+
+ggplot(aes(x = quality_category), data = winequalitydata)+
+  geom_bar()+
+  scale_y_continuous(breaks = seq(0,1600,200))
+
+```
+
+after put the quality into category, we can put our focus on the most common
+group
+(4,6].
+
+
+# Bivariate Plots Section
+
+
+### relationship between combination of each two factors and coefficient
+```{r fig1, fig.height =10, fig.width =10, echo=FALSE,message=FALSE, warning=FALSE}
+#ggpair
+
+numbervariable  <- winequalitydata[c(1:12)]
+
+ggpairs(numbervariable,lower = list(continuous ='smooth'))+
+       ggtitle("correlation between each varialbe and variable distribution")+
+    theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+1. Factor of Highest coefficient with quality is alcohol. Coeffecient is 0.476\
+
+2. Factor of second highes coefficient with quality is volatile.acidity. \
+Coeffecient is -0.391
+
+### more plot on coefficient chart.
+```{r fig2, fig.height =10, fig.width =10, echo=FALSE,message=FALSE, warning=FALSE}
+
+numbervariable  <- winequalitydata[c(1:12)]
+
+corr <-cor(numbervariable)
+
+ggcorr(corr,label= TRUE, hjust = 0.65,label_round = 3, method = c("pairwise","pearson"))
+
+```
+
+
+
+
+### plot relationship between fixed.acidity and volatile.acidity
+
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+#scatter plot
+
+ggplot(aes(x = fixed.acidity, y = volatile.acidity), data = winequalitydata)+
+  geom_jitter(alpha= 1/5)+
+  geom_smooth()+
+  scale_x_continuous(breaks = seq(6,15,1))+
+      ggtitle("relationship between fixed.acidity and volatile.acidity")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  
+  labs(x="fixed.acidity(g / dm^3)", y="volatile.acidity(g / dm^3)")
+
+
+
+
+
+```
+
+### correlation  between fixed.acidity and volatile.acidity
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+cor(winequalitydata$fixed.acidity,winequalitydata$volatile.acidity)
+
+```
+
+
+Assume both factors should have strong positive correlation. \
+actual two variable have a little negative correlation, which against \
+my expectation
+
+
+### plot relationship between  volatile.acidity and sulphates
+
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+#scatter plot
+
+ggplot(aes(x = volatile.acidity, y = sulphates), data = winequalitydata)+
+  geom_jitter(alpha= 1/5)+
+  geom_smooth()+
+  scale_x_continuous(breaks = seq(0.1,1.3,0.1))+
+  scale_y_continuous(breaks= seq(0.55,1.5,0.1))+
+      ggtitle("relationship between sulphates and volatile.acidity")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  
+  labs(x="volatile.acidity(g / dm3)", y="sulphates(g / dm3)")
+
+
+
+
+
+```
+
+### correlation  between sulphates and volatile.acidity
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+cor(winequalitydata$sulphates,winequalitydata$volatile.acidity)
+
+```
+
+actual two variable have a little negative correlation
+
+
+### plot relationship between alcohol and quality
+```{r echo=FALSE,message=FALSE, warning=FALSE, relationship_between_alcohol_and_quality}
+
+#scatter plot
+
+ggplot(aes(x = alcohol, y = quality), data = winequalitydata)+
+  geom_jitter(aes(colour = factor(quality)))+
+  stat_summary(fun.x = "median", colour = 'blue', size = 1, geom = "point",
+               shape = 2)+
+  geom_smooth()+
+  scale_x_continuous(breaks = seq(9,14,0.4))+
+  guides(colour = guide_legend(override.aes = list(alpha =1), 
+                               title = "quality"))+
+  scale_color_brewer(type ="div",palette = 'RdYlGn')+
+      ggtitle("quality vs alcohol")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  
+  labs(x="alcohol(%)")
+
+
+```
+
+
+
+show indication that with the increase of the average alcohol (between 9 and 12)\
+,the quality is higher.But since the quality category is too much\
+and some outlier among 
+
+
+### calculate relationship between quality and average_alcohol
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+winequalitydata %>%
+  group_by(quality) %>%
+  summarise(
+    average_alcohol = mean(alcohol)
+  )
+
+
+```
+
+
+### boxplot to take another look of relationship between quality and alcohol
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+ggplot(aes(x = quality, y= alcohol,group = quality), data = winequalitydata)+
+  geom_boxplot(notch = FALSE, color = 'blue')+
+  scale_x_discrete(limits = c(3:8))+
+  labs(y="alcohol(%)")+
+  geom_jitter(alpha = 0.3)+
+  stat_summary(fun.y = 'mean',
+               geom = "point",
+               color = "red",
+               shape =8,
+               size = 4)
+
+
+```
+
+from 5 to 8 quality group,the alcohol level is increasing, \
+similar as we discoverd in the scatter plot
+
+### explore relationship between fixed.acidity and quality
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+ggplot(aes(x = fixed.acidity, y = quality), data = winequalitydata)+
+  geom_jitter(aes(colour= factor(quality)))+ 
+  scale_x_continuous(breaks = seq(5,15,1))+
+  geom_smooth()+
+  stat_summary(fun.x = "median", colour = 'blue', size = 1, 
+               geom = "point",shape = 2)+
+    scale_color_brewer(type ="div",palette = 'RdYlGn')+
+    guides(colour = guide_legend(override.aes = list(alpha =1),
+                                 title = "quality"))+
+     ggtitle("quality vs fixed.acidity")+
+    theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="fixed.acitidy(g / dm^3)")
+
+
+
+
+
+```
+
+does not show clearn relationship between those two variables
+
+
+### explore relationship between ph and quality
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+
+
+ggplot(aes(x = pH, y = quality), data = winequalitydata)+
+  geom_jitter(aes(colour = factor(quality)))+ 
+  scale_x_continuous(breaks = seq(2.9,4,0.1),)+
+  stat_summary(fun.x = "median", colour = 'blue', size = 1, 
+               geom = "point",shape = 2)+
+  geom_smooth()+
+    scale_color_brewer(type ="div",palette = 'RdYlGn')+
+    guides(colour = guide_legend(override.aes = list(alpha =1), 
+                                 title = "quality"))+
+       ggtitle("quality vs ph")+
+    theme(plot.title = element_text(hjust = 0.5))
+
+
+
+
+```
+
+does not show clearn relationship between those two variable
+
+
+
+
+### Explore relationship between volatile.acidity and quality
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+
+
+ggplot(aes(x = volatile.acidity, y = quality), data = winequalitydata)+
+  geom_jitter(height = 0.3,aes(colour = factor(quality)))+ 
+  scale_x_continuous(breaks = seq(0.2,2,0.2))+
+  stat_summary(fun.x = "median", colour = 'blue', size = 1, 
+               geom = "point" ,shape = 2)+
+  geom_smooth()+
+  scale_y_discrete(limits = c(3:8))+
+     scale_color_brewer(type ="div",palette = 'RdYlGn')+
+    guides(colour = guide_legend(override.aes = list(alpha =1), 
+                                 title = "quality"))+    
+  ggtitle("quality vs volatile.acidity")+
+    theme(plot.title = element_text(hjust = 0.5))+
+    labs(x="volatile.acidity(g / dm^3)")
+
+  
+
+
+```
+
+clean indication between volatile.acidity and quality.\
+With Volatile.acidity increase, quality decrease
+
+
+# Bivariate Analysis
+
+
+
+### What was the strongest relationship you found?
+
+Most strong relationship I found ti between alcohol and quality.\
+
+If we set limit the applied range, the coefficient will be even higher\
+
+That is why I did winequality factor into the dataset\
+
+
+# Multivariate Plots Section
+
+
+
+
+### alcohol, volatile.acidity and quality relatinship
+```{r echo=FALSE,message=FALSE, warning=FALSE }
+
+
+ggplot(aes(x = alcohol, y = volatile.acidity, color = factor(quality)), data = winequalitydata)+
+  geom_jitter(alpha = 1/2,aes(colour = factor(quality)))+
+  guides(colour = guide_legend(override.aes = list(alpha =1)))+
+       ggtitle("relationship between alcohol, volatile.acidity and quality")+
+    theme(plot.title = element_text(hjust = 0.5))+
+  guides(colour = guide_legend(override.aes = list(alpha =1), 
+                               title = "quality"))+
+       scale_color_brewer(type ="div",palette = 'RdYlGn')+
+    labs(y="volatile.acidity(g / dm^3)", x = "alcohol(%)")+
+  geom_smooth(method = 'lm',size =1, se =FALSE)
+
+
+
+```
+
+we can see the trend that. Most high quality with high alcohol\
+and lower volatile.acidity lower quality of wine\
+However, the trend is not clear since we have 6 category of quality\
+and some  sample is outlier with volatile.acidity. Let's use group quality \
+together and remove some outlier from data
+
+
+### scatter map among quality, alchohol and volatile.acidity
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+
+ggplot(aes(x= alcohol, y = volatile.acidity, color = quality_category), 
+       data= winequalitydata)+
+  geom_jitter(aes(colour = quality_category))+
+  scale_x_continuous(limits = c(min(winequalitydata$alcohol),
+                                quantile(winequalitydata$alcohol,0.95)),
+                     breaks = seq(8,13,0.5))+
+  scale_y_continuous(limits = c(min(winequalitydata$volatile.acidity),
+                                quantile(winequalitydata$volatile,0.95)))+     
+  ggtitle("relationship between alcohol, volatile.acidity and quality category")+
+    theme(plot.title = element_text(hjust = 0.5))+
+      labs(y="volatile.acidity(g / dm^3)", x = "alcohol(%)")+
+  geom_smooth(method='lm',size =1)
+  
+
+
+```
+
+Much clear relationship between quiality, alchohol and volatile.acidity.\
+very few sample from (0,4] group. For (4,6] and (6,8] shows clear indication \
+between alcohol and violatile .acidity. (Higher quality group tend to\
+have high alcohol and lower volatile.acidity)
+
+# Multivariate Analysis
+
+### Building the linear model for price
+
+### using mtable to try different parameter for linear regression model
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+m1 <-lm(I(quality) ~ I(alcohol), data = winequalitydata)
+
+m2 <- update(m1,~. +volatile.acidity)
+
+m3 <- update(m2, ~ . + sulphates)
+
+
+
+mtable(m1, m2, m3)
+
+```
+
+even with 3 different variable. R-squared is not really good.\
+only explain 33.6 percent fo quality. Maybe it is not fit for linear 
+regression model
+
+
+
+
+
+------
+
+# Final Plots and Summary
+
+
+
+### Plot One
+```{r echo=FALSE,message=FALSE, warning=FALSE, Plot_one}
+ggplot(aes(x = factor(quality)),data = winequalitydata)+
+  geom_bar()+
+ggtitle("quality distribution")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(x="quality ")
+
+```
+
+
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+
+summary(winequalitydata$quality_category)
+
+prop.table(table(winequalitydata$quality))
+
+
+```
+
+
+### Description first
+
+Since we are talking about quality, I want to explore the quality distribution\
+Most of quality is 5,6. Very few in 3,4,8. Data is very centrialized.\
+4 to 6 group accounmt 82%. And that is one of reason I group the middle\
+high proportion into one group(4,6] later.so we can focus the big trend \
+rather the minor difference
+
+
+
+
+
+### Plot two
+```{r echo=FALSE,message=FALSE, warning=FALSE, Plot_Three}
+
+
+#scatter plot
+
+ggplot(aes(x = alcohol, y = quality), data = winequalitydata)+
+  geom_jitter(aes(colour = factor(quality)))+
+  stat_summary(fun.x = "median", colour = 'blue', size = 1, 
+               geom = "point",shape = 2)+
+  geom_smooth()+
+  scale_x_continuous(breaks = seq(9,14,0.4))+
+  guides(colour = guide_legend(override.aes = list(alpha =1), 
+                               title = "quality"))+
+  scale_color_brewer(type ="div",palette = 'RdYlGn')+
+      ggtitle("quality vs alcohol")+
+  theme(plot.title = element_text(hjust = 0.5))+
+        labs( x = "alcohol(%)")
+
+
+
+
+```
+
+### Description two
+
+
+Based on GGpair to explore the coeffecient between any two variable, we find\
+alcohol have most strong corelation with quality. So, this plot is to visualize\
+how that relationship between quality and alcohol\
+
+From the chart, we can tell clean relationship indicating higher alcohol% trend\
+to have higher quality, especailly when the alcohol(%) betwween 9.4 to 12.2\
+
+
+### Plot three
+```{r echo=FALSE, message=FALSE, warning=FALSE,Plot_One}
+
+
+
+ggplot(aes(x= alcohol, y = volatile.acidity, color = quality_category), 
+       data= winequalitydata)+
+  geom_jitter(aes(colour = quality_category))+
+  scale_x_continuous(limits = c(min(winequalitydata$alcohol),
+                                quantile(winequalitydata$alcohol,0.95)),
+                     breaks = seq(8,13,0.5))+
+  scale_y_continuous(limits = c(min(winequalitydata$volatile.acidity),
+                                quantile(winequalitydata$volatile,0.95)))+     
+  ggtitle("relationship between alcohol, volatile.acidity and quality category")+
+    theme(plot.title = element_text(hjust = 0.5))+
+      labs(y="volatile.acidity(g / dm^3)", x = "alcohol(%)")+
+  geom_smooth(method='lm',size =1)
+  
+
+
+
+
+```
+
+### Description three
+ 
+ From the coeffecient chart information, we can tell that alcohol and volatile.acidity\
+ are two most influencial factors for qualitys. So, we want to discorver how those\
+ two factors influence quality simultaneously
+ In order to clear see how alcohol and volatile.acidity influnece the quality\
+ first, we group similar quality into smaller group so we can see better trend\
+ 
+ Since (0,4] group have few sample, we could not see much trend.\
+
+ For (4,6] and (6,8] shows clear indication between alcohol and violatile .acidity\
+ (Higher quality group tend to have high alcohol and lower volatile.acidity)
+
+
+
+------
+
+# Reflection
+
+From the analysis, we can tell the most quality is under 4,5,6. Most influence\ 
+factor to determine quality of wine is alcohol and volatile.acidity \
+among the 13 variables.
+Hihger alcohol and lower volatile.acidity normally indicate high quality of wine
+
+
+Previous, I think ph should have strong relationship with quality. However\
+that does not supported by data.
+
+Previous, I want to plot based on quality. however, since the category variable\ 
+have 6 different values, it will difficult to distinguish the different. \
+After group those 6 different value into 3 ban, the trend is more clear\
+and we filter out some information which is less important. \
+
+In addition, even with those two factors + sulphates, \
+regression model indicates can only explain 33% data in the dataset\
+we need to large dataset or other model to predict the quality of wine
+
